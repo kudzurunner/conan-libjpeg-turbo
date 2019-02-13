@@ -11,22 +11,26 @@ environment:
   CONAN_PASSWORD:
     secure: FHRzS1Qt5LEb3S+po6y9BkjaPm/d5gv56M9ZC90wpJVIJs/f4ljLdVoXhbqk4jEZ
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    CONAN_VISUAL_VERSIONS: 15
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CONAN_VISUAL_VERSIONS: 15
+      TOOLSET: v141
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CONAN_VISUAL_VERSIONS: 15
+      TOOLSET: v140
 install:
-- cmd: >-
-    set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%
+  - cmd: >-
+      set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%
 
-    pip install conan --upgrade
+      pip install conan --upgrade
 
-    pip install conan_package_tools
+      pip install conan_package_tools
 
-    conan remote add conan-stable https://api.bintray.com/conan/kudzurunner/conan-stable
+      conan remote add conan-stable https://api.bintray.com/conan/kudzurunner/conan-stable
 
-    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+      conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 
-    conan user
+      conan user
 build: off
 test_script:
-- cmd: python build.py
+  - cmd: python build.py
 deploy: off
