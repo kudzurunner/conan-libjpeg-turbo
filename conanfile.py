@@ -40,6 +40,9 @@ class LibjpegturboConan(ConanFile):
     generators = "cmake"
     source_name = "{}-{}".format(name, version)
 
+    exports = (
+        "patches/*.patch")
+
     def configure(self):
         del self.settings.compiler.libcxx
         if self.settings.os == "Windows":
@@ -52,6 +55,8 @@ class LibjpegturboConan(ConanFile):
         tools.download(url, filename=archive_name)
         tools.untargz(filename=archive_name)
         os.remove(archive_name)
+
+        tools.patch(base_path=self.source_name, patch_file="patches/install.patch", strip=1)
 
         tools.replace_in_file(
             "{}/CMakeLists.txt".format(self.source_name), "project(libjpeg-turbo C)",
