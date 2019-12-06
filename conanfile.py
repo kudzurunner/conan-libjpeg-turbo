@@ -1,13 +1,15 @@
 from conans import ConanFile, CMake, tools
 import os
 
+
 class LibjpegturboConan(ConanFile):
     name = "libjpeg-turbo"
-    version = "2.0.1"
+    version = "2.0.3"
     license = "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/master/LICENSE.md"
     author = "KudzuRunner"
     url = "https://github.com/kudzurunner/conan-libjpeg-turbo"
-    description = "libjpeg-turbo is a JPEG image codec that uses SIMD instructions to accelerate baseline JPEG compression and decompression"
+    description = "libjpeg-turbo is a JPEG image codec that uses SIMD instructions to accelerate baseline JPEG " \
+                  "compression and decompression "
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
@@ -21,7 +23,7 @@ class LibjpegturboConan(ConanFile):
         "with_mem_srcdst": [True, False],
         "with_simd": [True, False],
         "with_turbojpeg": [True, False]
-        }
+    }
     default_options = {
         "shared": True,
         "require_simd": False,
@@ -38,13 +40,10 @@ class LibjpegturboConan(ConanFile):
     generators = "cmake"
     source_name = "{}-{}".format(name, version)
 
-    exports = (
-        "patches/*.patch")
-
     def configure(self):
         del self.settings.compiler.libcxx
         if self.settings.os == "Windows":
-            self.requires("nasm_installer/2.13.02@bincrafters/stable")
+            self.requires("nasm/2.14")
 
     def source(self):
         archive_name = "{}.tar.gz".format(self.version)
@@ -53,8 +52,6 @@ class LibjpegturboConan(ConanFile):
         tools.download(url, filename=archive_name)
         tools.untargz(filename=archive_name)
         os.remove(archive_name)
-
-        tools.patch(base_path=self.source_name, patch_file="patches/install.patch", strip=1)
 
         tools.replace_in_file(
             "{}/CMakeLists.txt".format(self.source_name), "project(libjpeg-turbo C)",
@@ -96,4 +93,5 @@ class LibjpegturboConan(ConanFile):
         self.copy(pattern="*.a", dst="lib", src="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ['jpeg', 'turbojpeg'] if self.settings.os == "Windows" and self.options.shared else ['jpeg-static', 'turbojpeg-static']
+        self.cpp_info.libs = ['jpeg', 'turbojpeg'] if self.settings.os == "Windows" and self.options.shared else [
+            'jpeg-static', 'turbojpeg-static']
